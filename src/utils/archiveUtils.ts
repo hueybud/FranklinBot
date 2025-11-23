@@ -67,7 +67,7 @@ export function generateReplyMessageWithArchivedURLs(archivedURLs: string[]) {
     return `${multiLineHeader} ${multiLineBody}`;
 }
 
-// For the add/remove commands
+// For the add/remove paywall domain commands
 export function validateDomainInput(input: string): string | undefined {
     const trimmed = input.trim().toLowerCase();
 
@@ -76,7 +76,7 @@ export function validateDomainInput(input: string): string | undefined {
         return undefined;
     }
 
-    // whitelist allowed characters
+    // allowlist allowed characters
     if (!/^[a-z0-9-]{2,50}$/.test(trimmed)) {
         return undefined;
     }
