@@ -10,7 +10,8 @@ export enum EmojiStatus {
 export enum CommandName {
     ADD_PAYWALL_DOMAIN_NAME = "addpaywalldomain",
     LIST_PAYWALL_DOMAINS_NAME = "listpaywalldomains",
-    REMOVE_PAYWALL_DOMAIN_NAME = "removepaywalldomain"
+    REMOVE_PAYWALL_DOMAIN_NAME = "removepaywalldomain",
+    HELLO_FRANKLIN = "hellofranklin" 
 }
 
 export async function registerCommands() {
@@ -21,6 +22,7 @@ export async function registerCommands() {
         new SlashCommandBuilder().setName(CommandName.ADD_PAYWALL_DOMAIN_NAME).setDescription('Adds a domain to the paywall domain list for archive lookup eligibility').addStringOption((option) => option.setName('domain').setDescription('The domain to add to the paywall domain list').setRequired(true)),
         new SlashCommandBuilder().setName(CommandName.LIST_PAYWALL_DOMAINS_NAME).setDescription('Lists the domains in the paywall domain list'),
         new SlashCommandBuilder().setName(CommandName.REMOVE_PAYWALL_DOMAIN_NAME).setDescription('Removes a domain from the paywall domain list').addStringOption((option) => option.setName('domain').setDescription('The domain to remove from the paywall domain list').setRequired(true)),
+        new SlashCommandBuilder().setName(CommandName.HELLO_FRANKLIN).setDescription('Say hello to Franklin!'),
     ]
 
     await rest.put(Routes.applicationCommands(appId), { body: commands });
@@ -85,4 +87,9 @@ export async function removePaywallDomainEntry(interaction: ChatInputCommandInte
     const successMessage = `${EmojiStatus.SUCCESS} Successfully removed **${sanitizedDomainToRemove}** from the paywall domain list!`
     console.log(successMessage);
     return await interaction.reply(successMessage)
+}
+
+
+export async function helloFranklin(interaction: ChatInputCommandInteraction): Promise<InteractionResponse> {
+    return await interaction.reply(`Hello, ${interaction.user} !`)
 }

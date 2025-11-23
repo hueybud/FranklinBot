@@ -1,5 +1,5 @@
 import { Client, Interaction, Message } from "discord.js";
-import { delay, extractPaywallDomainURLs, getLatestArchivedURL, generateReplyMessageWithArchivedURLs, isDMBotOwnerOnArchiveFailureEnabled, getEnviornmentVariable, EnviornmentVariableNames, addPaywallDomainEntry, CommandName, listPaywallDomainEntries, removePaywallDomainEntry } from "./utils"
+import { delay, extractPaywallDomainURLs, getLatestArchivedURL, generateReplyMessageWithArchivedURLs, isDMBotOwnerOnArchiveFailureEnabled, getEnviornmentVariable, EnviornmentVariableNames, addPaywallDomainEntry, CommandName, listPaywallDomainEntries, removePaywallDomainEntry, helloFranklin } from "./utils"
 const MAX_INVOCATION_ATTEMPT_ON_MESSAGE_CREATION = 3;
 const RETRY_DELAY_ON_MESSAGE_CREATION = 5000 // 5 seconds
 
@@ -83,6 +83,9 @@ export async function onInteraction(client: Client, interaction: Interaction) {
                 break;
             case CommandName.REMOVE_PAYWALL_DOMAIN_NAME:
                 await removePaywallDomainEntry(interaction);
+                break;
+            case CommandName.HELLO_FRANKLIN:
+                await helloFranklin(interaction);
                 break;
             default:
                 return;
