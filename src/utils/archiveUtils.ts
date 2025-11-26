@@ -21,13 +21,15 @@ export async function extractPaywallDomainURLs(messageContent: string) {
     for (let i =0; i < Math.min(extractedURLs.length, MAX_AMOUNT_OF_URLS_TO_EXTRACT); i++) {
         const url = extractedURLs[i];
         try {
-            const { hostname } = new URL(url); // www.bloomberg.com
+            const { hostname, origin, pathname } = new URL(url); // www.bloomberg.com
             const parts = hostname.split("."); // [www, bloomberg, com]
             const baseDomain = parts[parts.length - 2].toLowerCase(); // bloomberg
             if (paywallDomainList.includes(baseDomain)) {
                 // URL contains a domain in our paywall domain list
-                console.log(`Adding ${url}`)
-                paywallDomainMatchedURLs.push(url);
+                // Remove the queryParams before adding to the returned list
+                const urlWithoutQueryParams = origin + pathname;
+                console.log(`Adding ${urlWithoutQueryParams}`)
+                paywallDomainMatchedURLs.push(urlWithoutQueryParams);
             }
         } catch (e) {
             // Skip any URLs where the `new URL` call fails
