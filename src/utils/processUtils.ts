@@ -28,12 +28,37 @@ export function isDMBotOwnerOnArchiveFailureEnabled() {
 }
 
 export function getPaywallDomainListPath() {
+    // Use DATA_DIR if provided by orchestrator, otherwise fallback to bundled assets
+    const dataDir = process.env.DATA_DIR;
+    if (dataDir) {
+        return path.join(dataDir, "paywallDomainList.json");
+    }
+    return path.join(__dirname, "assets", "paywallDomainList.json");
+}
+
+function getBundledPaywallDomainListPath() {
     return path.join(__dirname, "assets", "paywallDomainList.json");
 }
 
 export async function getPaywallDomainListContents(): Promise<string[]> {
+    const targetPath = getPaywallDomainListPath();
+
+    // If using DATA_DIR and file doesn't exist, copy from bundled assets
+    if (process.env.DATA_DIR && !fs.existsSync(targetPath)) {
+        console.log(`Initializing paywall domain list in DATA_DIR...`);
+        const bundledPath = getBundledPaywallDomainListPath();
+        if (fs.existsSync(bundledPath)) {
+            fs.copyFileSync(bundledPath, targetPath);
+            console.log(`Copied default paywall domain list to ${targetPath}`);
+        } else {
+            // Create empty list if bundled file doesn't exist
+            fs.writeFileSync(targetPath, "[]", "utf-8");
+            console.log(`Created empty paywall domain list at ${targetPath}`);
+        }
+    }
+
     try {
-        return JSON.parse(fs.readFileSync(getPaywallDomainListPath(), { encoding: "utf-8" }));
+        return JSON.parse(fs.readFileSync(targetPath, { encoding: "utf-8" }));
     } catch (err) {
         console.error(`Error reading paywall domain list file: ${err}`);
         throw err;
