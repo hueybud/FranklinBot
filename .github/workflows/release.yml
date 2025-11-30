@@ -56,11 +56,16 @@ jobs:
           cp package.min.json staging/package.json
           cd staging && zip -r ../dist.zip . -x "*.map"
 
+      - name: Get new version tag
+        id: get_version
+        run: echo "tag=$(git describe --tags --abbrev=0)" >> $GITHUB_OUTPUT
+
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: ${{ github.ref_name }}
-          name: FranklinBot ${{ github.ref_name }}
+          tag_name: ${{ steps.get_version.outputs.tag }}
+          name: FranklinBot ${{ steps.get_version.outputs.tag }}
           files: dist.zip
           draft: false
           prerelease: false
+
