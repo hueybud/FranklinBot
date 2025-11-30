@@ -3,6 +3,8 @@ name: Auto Build & Release
 on:
   push:
     branches: [ main ]
+  pull_request:
+    types: [closed]
 
 permissions:
   contents: write  # Required to create releases + push tags
@@ -11,9 +13,18 @@ jobs:
   release:
     runs-on: ubuntu-latest
 
+    # Only run when:
+    # 1. A commit is pushed to main, OR
+    # 2. A PR was closed AND merged
+    if: |
+      github.event_name == 'push' ||
+      (github.event_name == 'pull_request' && github.event.pull_request.merged == true)
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Important so npm version can create tags properly
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
